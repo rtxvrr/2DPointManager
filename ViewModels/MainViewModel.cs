@@ -1,12 +1,7 @@
-﻿using _2DPointManager.Models;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace _2DPointManager.ViewModels
@@ -18,11 +13,11 @@ namespace _2DPointManager.ViewModels
 
         public MainViewModel()
         {
-            Points = new ObservableCollection<Point>();
-            AddPointCommand = new RelayCommand(AddPoint, CanAddPoint);
+            Points = new ObservableCollection<Models.Point>();
+            AddPointCommand = new RelayCommand(AddPoint, null);
         }
 
-        public ObservableCollection<Point> Points { get; }
+        public ObservableCollection<Models.Point> Points { get; }
 
         public double XCoordinate
         {
@@ -31,6 +26,7 @@ namespace _2DPointManager.ViewModels
             {
                 _xCoordinate = value;
                 OnPropertyChanged();
+                (AddPointCommand as RelayCommand)?.RaiseCanExecuteChanged();
             }
         }
 
@@ -41,19 +37,33 @@ namespace _2DPointManager.ViewModels
             {
                 _yCoordinate = value;
                 OnPropertyChanged();
+                (AddPointCommand as RelayCommand)?.RaiseCanExecuteChanged();
             }
         }
 
         public ICommand AddPointCommand { get; }
 
-        private bool CanAddPoint() => _xCoordinate >= -10 && _xCoordinate <= 10 &&
-                                       _yCoordinate >= -10 && _yCoordinate <= 10;
+        private bool CanAddPoint(double xCoordinate, double yCoordinate)
+        {
+            if(xCoordinate >= -10 && xCoordinate <= 10 && yCoordinate >= -10 && yCoordinate <= 10)
+                return true;
+            return false;
+        }
 
         private void AddPoint()
         {
-            Points.Add(new Point(_xCoordinate, _yCoordinate));
-            XCoordinate = 0;
-            YCoordinate = 0;
+            if (CanAddPoint(_xCoordinate, _yCoordinate))
+            {
+                Points.Add(new Models.Point(_xCoordinate, _yCoordinate));
+                XCoordinate = 0;
+                YCoordinate = 0;
+            }
+            else
+            {
+                MessageBox.Show("Диапозон координат для X и Y от -10 до 10");
+                XCoordinate = 0;
+                YCoordinate = 0;
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

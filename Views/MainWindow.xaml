@@ -4,36 +4,38 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:_2DPointManager"
+        xmlns:controls="clr-namespace:_2DPointManager.Controls" 
+        xmlns:vm="clr-namespace:_2DPointManager.ViewModels"
         mc:Ignorable="d"
-        Title="Point Adder" Height="450" Width="800" WindowStartupLocation="CenterScreen">
+        Title="Point Adder" Height="700" MinHeight="700" MaxHeight="700"
+                            Width="600" MinWidth="600" MaxWidth="600"
+                            WindowStartupLocation="CenterScreen">
+    <Window.DataContext>
+        <vm:MainViewModel/>
+    </Window.DataContext>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="100"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10">
             <Label Content="X:"/>
-            <TextBox Text="{Binding XCoordinate, Mode=TwoWay}" 
-                     Width="50" Margin="0 0 10 0" TextAlignment="Center"/>
+            <TextBox Text="{Binding XCoordinate, Mode=TwoWay}" Width="50" Margin="0 0 10 0" TextAlignment="Center"/>
             <Label Content="Y:"/>
-            <TextBox Text="{Binding YCoordinate, Mode=TwoWay}" 
-                     Width="50" Margin="0 0 10 0" TextAlignment="Center"/>
+            <TextBox Text="{Binding YCoordinate, Mode=TwoWay}" Width="50" Margin="0 0 10 0" TextAlignment="Center"/>
             <Button Content="Добавить" Command="{Binding AddPointCommand}"/>
         </StackPanel>
 
         <ListBox Grid.Row="1" ItemsSource="{Binding Points}" Margin="10"/>
-        <!-- Размещение точек(Пока не рабочее) -->
-        <Canvas Grid.Row="2" Background="LightGray" Name="pointCanvas">
-            <ItemsControl ItemsSource="{Binding Points}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Ellipse Fill="Red" Width="10" Height="10" Margin="-5,-5,0,0"
-                                 Canvas.Left="{Binding X}" Canvas.Top="{Binding Y}" />
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </Canvas>
+
+        <!-- Отображение точек -->
+        <controls:CoordinatePlaneControl  Points="{Binding Points}" 
+                                          XCoordinate="{Binding XCoordinate}" 
+                                          YCoordinate="{Binding YCoordinate}"
+                                          Grid.Row="2"
+                                          Width="500"
+                                          Height="500"/>
     </Grid>
 </Window>
